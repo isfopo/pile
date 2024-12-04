@@ -3,7 +3,7 @@
   "displayName": "Pile",
   "publisher": "isfopo",
   "description": "A pile.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "icon": "assets/icon.png",
   "preview": true,
   "engines": {
