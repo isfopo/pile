@@ -1,0 +1,125 @@
+{
+  "name": "pile",
+  "displayName": "Pile",
+  "publisher": "isfopo",
+  "description": "A pile.",
+  "version": "0.0.0",
+  "icon": "assets/icon.png",
+  "preview": true,
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "bugs": {
+    "url": "https://github.com/isfopo/pile/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isfopo/pile"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "activationEvents": [
+      "onCommand:pile.refresh",
+      "onCommand:pile.reset",
+      "onView:pile-explorer",
+      "onView:pile-sidebar"
+    ],
+    "commands": [
+      {
+        "command": "pile.add",
+        "title": "Add",
+        "icon": "$(add)"
+      },
+      {
+        "command": "pile.edit",
+        "title": "Edit",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "pile.refresh",
+        "title": "Refresh",
+        "category": "Pile",
+        "icon": "$(refresh~spin)"
+      },
+      {
+        "command": "pile.reset",
+        "category": "Pile",
+        "title": "Reset"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "pile.refresh",
+          "group": "navigation",
+          "when": "view == pile-sidebar || view == pile-explorer"
+        },
+        {
+          "command": "pile.reset",
+          "group": "context",
+          "when": "view == pile-sidebar || view == pile-explorer"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "pile.add",
+          "when": "viewItem == day || viewItem == task",
+          "group": "inline"
+        },
+        {
+          "command": "pile.edit",
+          "when": "viewItem == task",
+          "group": "inline"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pile-sidebar-view",
+          "title": "pile",
+          "icon": "assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "pile-sidebar-view": [
+        {
+          "id": "pile-sidebar",
+          "name": "pile",
+          "icon": "media/icon.svg"
+        }
+      ],
+      "explorer": [
+        {
+          "id": "pile-explorer",
+          "name": "pile",
+          "icon": "media/icon.svg"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "npm run check-types && node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "vscode:prepublish": "npm run package",
+    "package": "npm run check-types && node esbuild.js --production",
+    "clean": "rm -rf node_modules && npm i"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/vscode": "^1.91.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.7.0",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13"
+  }
+}
