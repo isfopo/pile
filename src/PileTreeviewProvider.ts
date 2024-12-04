@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { Logger } from "./services/Logger";
+import { LinkTreeItem } from "./classes/TreeItems/LinkTreeItem";
 export class PileTreeviewProvider
   implements vscode.TreeDataProvider<vscode.TreeItem>
 {
@@ -83,10 +84,7 @@ export class PileTreeviewProvider
   getChildren(
     element?: vscode.TreeItem | undefined
   ): vscode.ProviderResult<vscode.TreeItem[]> {
-    if (element === undefined) {
-    } else {
-      return;
-    }
+    return [new LinkTreeItem("https://github.com/")];
   }
 
   reset() {
