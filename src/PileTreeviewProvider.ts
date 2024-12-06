@@ -51,8 +51,7 @@ export class PileTreeviewProvider
     const panel = vscode.window.createWebviewPanel(
       "webpage",
       url,
-      vscode.ViewColumn.Beside,
-      {}
+      vscode.ViewColumn.Two
     );
 
     // And set its HTML content
