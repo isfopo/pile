@@ -22,7 +22,7 @@ export class PileTreeviewProvider
     this.logger = Logger.getInstance(context);
   }
 
-  register() {
+  register(): this {
     try {
       const trees = [
         vscode.window.createTreeView("pile-sidebar", {
@@ -47,7 +47,7 @@ export class PileTreeviewProvider
     }
   }
 
-  open(url: string) {
+  async open(url: string): Promise<void> {
     const panel = vscode.window.createWebviewPanel(
       "webpage",
       url,
@@ -56,24 +56,12 @@ export class PileTreeviewProvider
     );
 
     // And set its HTML content
-    panel.webview.html = this.getWebviewContent();
+    panel.webview.html = await this.getWebviewContent(url);
   }
 
-  getWebviewContent() {
-    return `<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-          />
-          <title>Cat Coding</title>
-        </head>
-        <body>
-          <p>hi</p>
-        </body>
-      </html>`;
+  async getWebviewContent(url: string): Promise<string> {
+    const response = await fetch(url);
+    return await response.text();
   }
 
   async add(
@@ -114,7 +102,7 @@ export class PileTreeviewProvider
   getChildren(
     element?: vscode.TreeItem | undefined
   ): vscode.ProviderResult<vscode.TreeItem[]> {
-    return [new LinkTreeItem("https://github.com/")];
+    return [new LinkTreeItem("https://stackoverflow.com/")];
   }
 
   reset() {
