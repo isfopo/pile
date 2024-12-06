@@ -1,5 +1,4 @@
 import { Memento } from "vscode";
-import { Day } from "../classes/entities/Day";
 
 /**
  * A class that provides a wrapper around the VSCode Memento storage.
@@ -44,19 +43,6 @@ export class Storage {
     return this.storage.get<T>(key, null as T);
   }
 
-  public async getOrCreateDay(key: string): Promise<Day | null> {
-    const value = this.storage.get<Day | null>(key, null);
-    if (!value) {
-      if (Day.validate(key)) {
-        const day = new Day(key);
-        await this.storage.update(key, day);
-        return day as Day;
-      }
-      return this.storage.get<Day | null>(key, null);
-    }
-    return value;
-  }
-
   /**
    * Stores a value associated with the specified key in the storage.
    * This method is asynchronous, allowing for non-blocking storage of data.
@@ -70,24 +56,6 @@ export class Storage {
   public async set<T>(key: string, value: T): Promise<void> {
     await this.storage.update(key, value);
   }
-
-  /**
-   * Retrieves an array of Day objects from the storage.
-   * This method first filters the keys in the storage to only include those
-   * that are valid day entries as determined by the `Day.validate` method.
-   * It then maps these valid keys to their corresponding Day objects by
-   * parsing the retrieved values using the `Day.parse` method.
-   * Finally, it filters out any undefined entries from the result.
-   *
-   * @returns {Day[]} - An array of valid Day objects retrieved from the storage.
-   */
-  public getDates = (): Day[] => {
-    return this.storage
-      .keys()
-      .filter((i) => Day.validate(i))
-      .map((i) => Day.parse(this.get(i)))
-      .filter((i) => i !== undefined) as Day[];
-  };
 
   /**
    * Resets the storage by updating all keys to 'undefined', effectively

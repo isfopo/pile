@@ -1,12 +1,9 @@
 import * as vscode from "vscode";
 import { PileTreeviewProvider } from "./PileTreeviewProvider";
-import { DayTreeItem } from "./classes/TreeItems/DayTreeItem";
-import { TaskTreeItem } from "./classes/TreeItems/TaskTreeItem";
-import { Day } from "./classes/entities/Day";
 import { Storage } from "./services/Storage";
 import { STORAGE_SCOPE } from "./consts";
-import { Task } from "./classes/entities/Task";
 import { UserInput } from "./services/UserInput";
+import { LinkTreeItem } from "./classes/TreeItems/LinkTreeItem";
 
 export function activate(context: vscode.ExtensionContext) {
   const treeDataProvider = new PileTreeviewProvider(context).register();
@@ -16,122 +13,11 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   vscode.commands.registerCommand(
-    "pile.add",
-    async (element: DayTreeItem | TaskTreeItem) => {
-      treeDataProvider.add(element, await UserInput.promptNewTask());
+    "pile.open",
+    async (element: LinkTreeItem) => {
+      treeDataProvider.open(element.url);
     }
   );
-
-  vscode.commands.registerCommand(
-    "pile.edit",
-    async (element: TaskTreeItem) => {
-      treeDataProvider.edit(
-        element,
-        await UserInput.promptUpdateTask(element.label?.toString() ?? "")
-      );
-    }
-  );
-
-  const addToSubtask = async (
-    parent: string,
-    taskIds: string[] | undefined
-  ) => {
-    const tasks = taskIds?.map((t) => storage.get<Task>(t)) ?? [];
-    const labels = tasks.map((t) => t.label);
-
-    let addTo;
-
-    const addNewTaskOption = Day.validate(parent)
-      ? `Add task to ${Day.format(parent)}`
-      : `Add subtask`;
-
-    const addToSubtaskPrompt =
-      "Select a task to add a subtask to or add a new task";
-
-    if (taskIds && taskIds.length > 0) {
-      addTo = await vscode.window.showQuickPick([addNewTaskOption, ...labels], {
-        placeHolder: addToSubtaskPrompt,
-      });
-    } else {
-      addTo = addNewTaskOption;
-    }
-
-    if (!addTo) {
-      return;
-    } else if (labels.includes(addTo)) {
-      const task = tasks.find((t) => t.label === addTo);
-      if (task) {
-        await addToSubtask(task?.id, task?.subtasks);
-      }
-    } else if (addTo === addNewTaskOption) {
-      const newTask = await vscode.window.showInputBox({
-        prompt: "Add a new task",
-      });
-      if (!newTask) {
-        return;
-      }
-
-      if (Day.validate(parent)) {
-        treeDataProvider.add(Day.parse(storage.get(parent) as Day), newTask);
-      } else if (Task.validate(parent)) {
-        treeDataProvider.add(
-          Task.parse(storage.get(parent) as string),
-          newTask
-        );
-      } else {
-        await vscode.window.showErrorMessage("Invalid parent");
-      }
-    }
-  };
-
-  vscode.commands.registerCommand("pile.add-to-today", async () => {
-    const { date, tasks } = storage.get<Day>(Day.today);
-
-    await addToSubtask(date, tasks);
-  });
-
-  vscode.commands.registerCommand("pile.add-to-tomorrow", async () => {
-    const day = await storage.getOrCreateDay(Day.dayAhead(1));
-
-    if (!!day) {
-      await addToSubtask(day.date, day.tasks);
-    }
-  });
-
-  vscode.commands.registerCommand("pile.add-to-day", async () => {
-    const chosenDay = await UserInput.promptDateSelection();
-
-    const getDaySafely = async () => {
-      try {
-        const retrievedDay = storage.get<Day>(chosenDay);
-        if (retrievedDay) {
-          return retrievedDay;
-        } else {
-          storage.set<Day>(chosenDay, new Day(chosenDay));
-          return storage.get<Day>(chosenDay);
-        }
-      } catch {
-        storage.set<Day>(chosenDay, new Day(chosenDay));
-        return storage.get<Day>(chosenDay);
-      }
-    };
-
-    const { date, tasks } = await getDaySafely();
-
-    await addToSubtask(date, tasks);
-  });
-
-  vscode.commands.registerCommand("pile.copy-today", () => {
-    treeDataProvider.copy(Day.today);
-  });
-
-  vscode.commands.registerCommand("pile.copy-yesterday", () => {
-    treeDataProvider.copy(Day.dayAgo(1));
-  });
-
-  vscode.commands.registerCommand("pile.copy-day", async () => {
-    treeDataProvider.copy(await UserInput.promptDateSelection());
-  });
 
   vscode.commands.registerCommand("pile.refresh", () => {
     treeDataProvider.refresh();

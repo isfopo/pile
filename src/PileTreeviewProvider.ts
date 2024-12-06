@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { Logger } from "./services/Logger";
 import { LinkTreeItem } from "./classes/TreeItems/LinkTreeItem";
+import { url } from "inspector";
 export class PileTreeviewProvider
   implements vscode.TreeDataProvider<vscode.TreeItem>
 {
@@ -44,6 +45,35 @@ export class PileTreeviewProvider
       this.logger.log(e as string);
       return this;
     }
+  }
+
+  open(url: string) {
+    const panel = vscode.window.createWebviewPanel(
+      "webpage",
+      url,
+      vscode.ViewColumn.Beside,
+      {}
+    );
+
+    // And set its HTML content
+    panel.webview.html = this.getWebviewContent();
+  }
+
+  getWebviewContent() {
+    return `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <title>Cat Coding</title>
+        </head>
+        <body>
+          <p>hi</p>
+        </body>
+      </html>`;
   }
 
   async add(

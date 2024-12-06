@@ -39,6 +39,11 @@
         "icon": "$(edit)"
       },
       {
+        "command": "pile.open",
+        "title": "Open",
+        "icon": "$(arrow-right)"
+      },
+      {
         "command": "pile.refresh",
         "title": "Refresh",
         "category": "Pile",
@@ -65,13 +70,7 @@
       ],
       "view/item/context": [
         {
-          "command": "pile.add",
-          "when": "viewItem == day || viewItem == task",
-          "group": "inline"
-        },
-        {
-          "command": "pile.edit",
-          "when": "viewItem == task",
+          "command": "pile.open",
           "group": "inline"
         }
       ]
