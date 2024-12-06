@@ -98,10 +98,12 @@ export class PileTreeviewProvider
     return element;
   }
 
-  getChildren(
-    element?: vscode.TreeItem | undefined
-  ): vscode.ProviderResult<vscode.TreeItem[]> {
-    return [new LinkTreeItem("https://stackoverflow.com/")];
+  getChildren(): vscode.ProviderResult<vscode.TreeItem[]> {
+    const urls =
+      vscode.workspace.getConfiguration().get<string[]>("pile.referenceUrls") ??
+      [];
+
+    return urls.map((url) => new LinkTreeItem(url));
   }
 
   reset() {

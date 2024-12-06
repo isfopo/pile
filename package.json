@@ -55,6 +55,16 @@
         "title": "Reset"
       }
     ],
+    "configuration": {
+      "title": "Pile",
+      "properties": {
+        "pile.referenceUrls": {
+          "type": "array",
+          "default": [],
+          "description": "A list of URLs in the pile."
+        }
+      }
+    },
     "menus": {
       "view/title": [
         {
