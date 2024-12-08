@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Logger } from "./services/Logger";
 import { LinkTreeItem } from "./classes/TreeItems/LinkTreeItem";
-import { url } from "inspector";
+
 export class PileTreeviewProvider
   implements vscode.TreeDataProvider<vscode.TreeItem>
 {
