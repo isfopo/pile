@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { PileTreeviewProvider } from "./PileTreeviewProvider";
 import { Storage } from "./services/Storage";
 import { STORAGE_SCOPE } from "./consts";
-import { UserInput } from "./services/UserInput";
 import { LinkTreeItem } from "./classes/TreeItems/LinkTreeItem";
 
 export function activate(context: vscode.ExtensionContext) {
