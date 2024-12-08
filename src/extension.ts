@@ -1,15 +1,9 @@
 import * as vscode from "vscode";
 import { PileTreeviewProvider } from "./PileTreeviewProvider";
-import { Storage } from "./services/Storage";
-import { STORAGE_SCOPE } from "./consts";
 import { LinkTreeItem } from "./classes/TreeItems/LinkTreeItem";
 
 export function activate(context: vscode.ExtensionContext) {
   const treeDataProvider = new PileTreeviewProvider(context).register();
-
-  const storage = new Storage(
-    STORAGE_SCOPE === "global" ? context.globalState : context.workspaceState
-  );
 
   vscode.commands.registerCommand(
     "pile.open",
